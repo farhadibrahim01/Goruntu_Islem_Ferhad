@@ -1,33 +1,51 @@
-# Fruit Classification with Transfer Learning
+Here is your **updated and clean `README.md`** for the `Goruntu_Islem_Proje` (Image Processing Project) repository, assuming the `data/` folder (with images) has been removed and users must provide their own dataset.
 
-This project applies transfer learning using the MobileNetV2 architecture to classify fruit types based on image data. The model achieves high accuracy despite the relatively small dataset by leveraging pretrained features from the ImageNet dataset.
+---
 
-## Objective
+````markdown
+# 🍎 Görüntü İşleme ile Meyve Sınıflandırması – Transfer Learning Projesi
 
-To classify 9 different fruit categories using image data by training only the top layers of a MobileNetV2 network. The goal is to reach strong generalization with minimal data using transfer learning.
+Bu proje, transfer öğrenimi (transfer learning) kullanarak farklı meyveleri sınıflandıran bir derin öğrenme modelini içerir. Model, TensorFlow ve Keras kütüphaneleri kullanılarak eğitilmiştir. Proje, eğitim ve test işlemleri ile birlikte tahmin ve veri hazırlama adımlarını da içermektedir.
 
-## Dataset
+---
 
-The dataset is available on Kaggle:
-[https://www.kaggle.com/datasets/shreyapmaher/fruits-dataset-images](https://www.kaggle.com/datasets/shreyapmaher/fruits-dataset-images)
+## 🛠️ Gerekli Kütüphaneler
 
-It contains 9 classes of fruits, including:
+Aşağıdaki kütüphaneleri kurmanız gerekmektedir. `requirements.txt` dosyasını kullanarak otomatik kurulum yapabilirsiniz:
 
-* apple
-* banana
-* cherry
-* chickoo
-* grapes
-* kiwi
-* mango
-* orange
-* strawberry
+```bash
+pip install -r requirements.txt
+````
 
-Each class contains a small number of high-quality `.jpg` images.
+Alternatif olarak manuel:
 
-### Directory Structure (after preparation)
-
+```bash
+pip install tensorflow matplotlib numpy
 ```
+
+---
+
+## 📁 Klasör Yapısı
+
+```bash
+Goruntu_Islem_Proje/
+├── model_transfer.py          # Transfer öğrenimi ile modeli eğitme
+├── train_transfer.py          # Eğitim işlemlerini başlatan komut
+├── predict.py                 # Eğitimli modelle tahmin
+├── prepare_dataset.py         # Veriyi eğitim/test klasörlerine ayırır
+├── fruit_classifier_model.h5  # Eğitimli model (isteğe bağlı)
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
+
+---
+
+## 📸 Veri Seti (data klasörü artık repoda yok)
+
+Veri seti `.gitignore` ile hariç tutulmuştur. Kullanıcı kendi `data/` klasörünü eklemelidir. Beklenen yapı:
+
+```bash
 data/
 ├── train/
 │   ├── apple/
@@ -39,89 +57,71 @@ data/
     └── ...
 ```
 
-## Dataset Preparation
+### 📥 Örnek veri:
 
-To automatically split the downloaded dataset into training and test folders, run the following script:
+Kaggle'dan indirilebilir örnek bir veri seti:
+[https://www.kaggle.com/datasets/kaggle/fruit-images-for-object-detection](https://www.kaggle.com/datasets/kaggle/fruit-images-for-object-detection)
+
+ZIP olarak indirilen dosyayı `Goruntu_Islem_Proje/data/` klasörüne çıkartın.
+
+---
+
+## ▶️ Eğitim Aşaması
+
+Veri setiniz hazırsa aşağıdaki komutla transfer öğrenimi eğitimi başlatabilirsiniz:
+
+```bash
+python train_transfer.py
+```
+
+Model `fruit_classifier_model.h5` olarak kayıt edilir.
+
+---
+
+## 🔍 Tahmin (Prediction)
+
+Test klasöründeki bir meyve resmiyle tahmin yapmak için:
+
+```bash
+python predict.py
+```
+
+Kod çalıştığında, örnek bir görseli sınıflandırır ve matplotlib ile sonucu görselleştirir.
+
+---
+
+## 📦 Dataset Hazırlama (Opsiyonel)
+
+Eğer elinizde karışık halde duran veri varsa, bu script veriyi `train/` ve `test/` klasörlerine ayırmanıza yardımcı olur:
 
 ```bash
 python prepare_dataset.py
 ```
 
-This script expects the original dataset to be located at:
+Kod, `data/` klasöründeki resimleri otomatik olarak %80 eğitim ve %20 test olarak bölüştürür.
+
+---
+
+## ❗Notlar
+
+* `data/` klasörü `.gitignore` ile korunmuştur, GitHub'a yüklenmez.
+* Model dosyaları (`.h5`, `.keras`) da Git'e dahil edilmez.
+* Lütfen `.zip`, `.jpg`, `.jpeg`, `.png` gibi dosyaları manuel olarak ekleyin.
+
+---
+
+## 👤 Hazırlayan
+
+**Farhad Ibrahim**
+Yapay Zeka / Görüntü İşleme / Transfer Learning
+GitHub: [farhadibrahim01](https://github.com/farhadibrahim01)
+
+---
 
 ```
-C:/Users/<username>/Downloads/archive/images/
+
+> ✅ Bu `README.md` dosyasını doğrudan projenizin kök klasörüne yapıştırabilirsiniz.  
+> ✅ Eğer istersen `.md` yerine `.txt` veya `.docx` formatında da sağlayabilirim.
+
+Hazırsanız bir sonraki adımda GitHub'daki ZIP dosyasının boyutunun küçüldüğünü test edebilirsiniz. Yardımcı olmamı ister misiniz?
 ```
-
-It randomly shuffles and copies images into:
-
-* `data/train/`
-* `data/test/`
-
-You only need to run this once.
-
-## Model Architecture
-
-The classification model uses the pretrained **MobileNetV2** as a base. The top layers are custom, consisting of:
-
-* `GlobalAveragePooling2D`
-* `Dropout(0.3)`
-* `Dense(num_classes, activation='softmax')`
-
-The base MobileNetV2 layers are frozen (non-trainable), which allows efficient training on small datasets.
-
-## Training Configuration
-
-* Input shape: (224, 224, 3)
-* Optimizer: Adam (learning rate 0.0005)
-* Loss: Categorical Crossentropy
-* Metric: Accuracy
-* EarlyStopping: Enabled (patience = 5)
-
-## Results
-
-The final model reached the following performance:
-
-* **Training Accuracy**: 98%
-* **Validation Accuracy**: 90%
-* **Epochs Trained**: 30
-
-A graphical plot of training and validation accuracy is displayed at the end of training.
-
-## How to Run
-
-1. **Install Requirements**:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Train the Model**:
-
-   ```bash
-   python train_transfer.py
-   ```
-
-3. **Predict Single Image (Optional)**:
-   Place a `.jpg` file in the root folder as `test_image.jpg` and run:
-
-   ```bash
-   python predict.py
-   ```
-
-## Files
-
-| File                         | Description                                      |
-| ---------------------------- | ------------------------------------------------ |
-| `model_transfer.py`          | Defines the MobileNetV2-based model architecture |
-| `train_transfer.py`          | Loads data and performs model training           |
-| `predict.py`                 | Predicts the class of a single image             |
-| `prepare_dataset.py`         | Splits original dataset into train/test folders  |
-| `requirements.txt`           | Python dependencies                              |
-| `README.md`                  | Project documentation                            |
-| `fruit_transfer_model.keras` | Trained model output                             |
-
-## Notes
-
-* `.venv/`, `__pycache__/`, and model weights (`.keras`, `.h5`) should be excluded from version control.
-* This project was implemented and tested in PyCharm using Python 3.11 and TensorFlow 2.12+.
